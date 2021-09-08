@@ -10,12 +10,12 @@
  gStyle->SetPadBorderMode(0);
  gStyle->SetPaintTextFormat("5.2f");  // What precision to put numbers if plotted with "TEXT"
 
- gStyle->SetHistLineWidth(2.1);
+ gStyle->SetHistLineWidth(2);
  gStyle->SetMarkerSize(1.3);
  gStyle->SetLegendBorderSize(0);
 
  // For publishing:
- gStyle->SetLineWidth(2.4);
+ gStyle->SetLineWidth(2);
  gStyle->SetTextSize(1.5);
  gStyle->SetLabelSize(0.06,"xyz");
  gStyle->SetTitleSize(0.06,"xyz");
