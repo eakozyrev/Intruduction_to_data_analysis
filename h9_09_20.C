@@ -9,14 +9,15 @@ using namespace std;
 int h9_09_20(){
 
   TCanvas *s = new TCanvas();
+  TRandom Rm;
   s->Divide(3,2);
   s->cd(1);
   TH2D *hist1 = new TH2D("histname","histtitle",100,0,1,100,0,1);
   hist1->SetXTitle("X axis, popugai1");
   hist1->SetYTitle("Y axis, popugai2"); 
-  for(int i = 0; i < 100; i++)hist1->Fill(0.4,0.5);
-  hist1->SetMarkerSize(0.3);
-  hist1->Draw();
+  for(int i = 0; i < 10000; i++)hist1->Fill(Rm.Gaus(0.5,0.1),Rm.Gaus(0.6,0.04));
+  hist1->SetMarkerSize(0.8);
+  hist1->Draw(); //"surf1"
 
   s->cd(2);
   TH1D *hist2 = new TH1D("hist2name","hist2title",100,0,1);
@@ -24,34 +25,36 @@ int h9_09_20(){
   hist2->SetLineColor(2);
   hist2->SetLineWidth(4);
   hist2->SetMarkerSize(1.9);
+  hist2->SetTitle(Form("#splitline{Scale, GetEntries() = %g,}{GetSum() = %g, GetSumOfWeights() = %g}", hist2->GetEntries(), hist2->GetSum(),hist2->GetSumOfWeights()));
   hist2->Draw();
 
   s->cd(3);
-  hist2->Draw("e");
-
-  s->cd(4);
-  TH1D *hist3 = new TH1D(*hist2);
+  TH1D *hist3 = (TH1D *)hist2->Clone();
   hist3->Scale(0.8);
-  hist3->SetTitle("Scale");
+  hist3->SetTitle(Form("#splitline{Scale, GetEntries() = %g,}{GetSum() = %g, GetSumOfWeights() = %g}", hist3->GetEntries(), hist3->GetSum(),hist3->GetSumOfWeights()));
   hist3->Draw("e");
 
-  s->cd(5);
-  TH1D *hist4 = new TH1D(*hist2);
-  hist4->SetTitle("SetNormfactor");
-  hist4->SetNormFactor(70);
-  hist4->Draw("e");  
+  s->cd(4);
+  TH1D *hist4 = new TH1D(*hist3);
+  hist4->SetBinContent(70,500);
+  hist4->SetTitle(Form("#splitline{Scale + SetBinContent, GetEntries() = %g,}{GetSum() = %g, GetSumOfWeights() = %g}", hist4->GetEntries(), hist4->GetSum(),hist4->GetSumOfWeights()));
+  hist4->Draw("HIST");
+  hist4->SetLineColor(1);
 
+  s->cd(5);
+  TH1D *hist5 = new TH1D(*hist4);
+  hist5->Rebin(4);
+  hist5->Draw("AH");
 
   s->cd(6);
-  TH1D *hist5 = new TH1D("hist5name","hist5title",100,0,1);
-  TH1D *hist6 = new TH1D("hist6name","hist6title",100,0,1);
-  hist6 = hist1->ProjectionY();
-  hist5->Add(hist3,2);
-  hist5->Add(hist6,1.5);
-  hist5->SetTitle("2*popugai1 + 1.5*popugai2");
-  hist5->Draw("e");
+  TH1D *hist6 = new TH1D("histname6","histtitle6",100,0,1);
+  hist6->Add(hist4,2);
+  hist6->Add(hist1->ProjectionY(),1.5);
+  hist6->SetTitle("2*popugai1 + 1.5*popugai2");
+  hist6->SetFillStyle(3002);
+  hist6->SetFillColor(3);
+  hist6->Draw("HIST");
 
   s->SaveAs("09.09.20.root");
-  
   return 1;
 }
